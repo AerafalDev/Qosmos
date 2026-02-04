@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Qosmos.Core.Plugins.Services;
 
 namespace Qosmos.Core.Network.Hosting;
 
@@ -55,31 +56,20 @@ internal sealed class QosmosApplication : IDisposable, IAsyncDisposable
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task RunAsync()
     {
+        var applicationLifetime = _host.Services.GetRequiredService<IHostApplicationLifetime>();
+        var pluginService = _host.Services.GetRequiredService<IPluginService>();
+
+        await pluginService.SetupAsync(applicationLifetime.ApplicationStarted);
+
         await _host.StartAsync();
 
-        var applicationLifetime = _host.Services.GetRequiredService<IHostApplicationLifetime>();
+        await pluginService.StartAsync(applicationLifetime.ApplicationStopping);
 
-        _ = Task.Run(async () =>
-        {
-            while (!applicationLifetime.ApplicationStopping.IsCancellationRequested)
-            {
-                try
-                {
-                    var line = await Console.In.ReadLineAsync(applicationLifetime.ApplicationStopping);
+        await Task.Delay(Timeout.Infinite, applicationLifetime.ApplicationStopping).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
 
-                    if (line is null || applicationLifetime.ApplicationStopping.IsCancellationRequested)
-                        break;
+        await pluginService.StopAsync(applicationLifetime.ApplicationStopped);
 
-                    // TODO: Commands
-                }
-                catch (OperationCanceledException)
-                {
-                    break;
-                }
-            }
-        }, applicationLifetime.ApplicationStopping);
-
-        await _host.WaitForShutdownAsync();
+        await _host.StopAsync();
     }
 
     /// <summary>

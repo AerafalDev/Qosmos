@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Qosmos.Core.Events.Extensions;
 using Qosmos.Core.Extensions;
+using Qosmos.Core.Plugins.Services;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
@@ -165,7 +166,8 @@ internal sealed class QosmosApplicationBuilder
         services
             .AddEventBus()
             .AddSingleton<IHostLifetime, QosmosApplicationLifetime>()
-            .AddSingleton(Options.Create(commandLineOptions));
+            .AddSingleton(Options.Create(commandLineOptions))
+            .AddSingleton<IPluginService, PluginService>();
     }
 
     /// <summary>

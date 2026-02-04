@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -10,9 +12,33 @@ namespace Qosmos.Core.Network.Hosting;
 /// <summary>
 /// Represents the main application class for a Qosmos application.
 /// </summary>
-internal sealed class QosmosApplication
+internal sealed class QosmosApplication : IDisposable, IAsyncDisposable
 {
     private readonly IHost _host;
+
+    /// <summary>
+    /// The application's configured services.
+    /// </summary>
+    public IServiceProvider Services =>
+        _host.Services;
+
+    /// <summary>
+    /// The application's configured <see cref="IConfiguration"/>.
+    /// </summary>
+    public IConfiguration Configuration =>
+        _host.Services.GetRequiredService<IConfiguration>();
+
+    /// <summary>
+    /// The application's configured <see cref="IWebHostEnvironment"/>.
+    /// </summary>
+    public IWebHostEnvironment Environment =>
+        _host.Services.GetRequiredService<IWebHostEnvironment>();
+
+    /// <summary>
+    /// Allows consumers to be notified of application lifetime events.
+    /// </summary>
+    public IHostApplicationLifetime Lifetime =>
+        _host.Services.GetRequiredService<IHostApplicationLifetime>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QosmosApplication"/> class.
@@ -54,6 +80,22 @@ internal sealed class QosmosApplication
         }, applicationLifetime.ApplicationStopping);
 
         await _host.WaitForShutdownAsync();
+    }
+
+    /// <summary>
+    /// Disposes the application.
+    /// </summary>
+    public void Dispose()
+    {
+        _host.Dispose();
+    }
+
+    /// <summary>
+    /// Disposes the application asynchronously.
+    /// </summary>
+    public ValueTask DisposeAsync()
+    {
+        return ((IAsyncDisposable)_host).DisposeAsync();
     }
 
     /// <summary>

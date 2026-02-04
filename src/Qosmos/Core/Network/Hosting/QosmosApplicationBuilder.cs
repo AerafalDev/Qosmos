@@ -2,11 +2,13 @@
 // Licensed under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.Metrics;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Qosmos.Core.Events.Extensions;
 using Qosmos.Core.Extensions;
 using Serilog;
@@ -159,9 +161,52 @@ internal sealed class QosmosApplicationBuilder
     /// <param name="services">The service collection.</param>
     private static void ConfigureServiceDefaults(IServiceCollection services)
     {
+        var commandLineOptions = ParseCommandLineOptions();
+
         services
+            .AddEventBus()
             .AddSingleton<IHostLifetime, QosmosApplicationLifetime>()
-            .AddEventBus();
+            .AddSingleton(Options.Create(commandLineOptions));
+    }
+
+    /// <summary>
+    /// Parses the command-line arguments into a <see cref="QosmosApplicationOptions"/> instance.
+    /// </summary>
+    /// <returns>A <see cref="QosmosApplicationOptions"/> instance containing the parsed command-line arguments.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the command-line arguments cannot be parsed.</exception>
+    private static QosmosApplicationOptions ParseCommandLineOptions()
+    {
+        var args = System.Environment
+            .GetCommandLineArgs()
+            .Skip(1)
+            .ToArray();
+
+        QosmosApplicationOptions? options = null;
+
+        Parser.Default
+            .ParseArguments<QosmosApplicationOptions>(args)
+            .WithParsed(parsed => options = parsed)
+            .WithNotParsed(HandleCommandLineErrors);
+
+        return options ?? throw new InvalidOperationException("Failed to parse command line arguments.");
+    }
+
+    /// <summary>
+    /// Handles errors that occur during the parsing of command-line arguments.
+    /// </summary>
+    /// <param name="errors">A collection of errors encountered during parsing.</param>
+    private static void HandleCommandLineErrors(IEnumerable<Error> errors)
+    {
+        var isHelpOrVersion = errors.Any(x => x is HelpRequestedError or VersionRequestedError);
+
+        if (!isHelpOrVersion)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Failed to parse command line arguments");
+            Console.WriteLine("Use --help for more information");
+        }
+
+        System.Environment.Exit(isHelpOrVersion ? 0 : 1);
     }
 
     /// <summary>

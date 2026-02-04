@@ -196,4 +196,18 @@ public sealed class PluginManifest
             $"IncludesAssetPack={IncludesAssetPack}" +
             $")";
     }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="PluginManifestBuilder"/> for a core plugin.
+    /// </summary>
+    /// <typeparam name="T">The type of the core plugin, which must inherit from <see cref="Plugin"/>.</typeparam>
+    /// <returns>
+    /// A new <see cref="PluginManifestBuilder"/> initialized with the group "Qosmos",
+    /// the name of the plugin type, and the fully qualified name of the plugin type.
+    /// </returns>
+    public static PluginManifestBuilder CorePlugin<T>()
+        where T : Plugin
+    {
+        return new PluginManifestBuilder("Qosmos", typeof(T).Name, typeof(T).FullName!);
+    }
 }

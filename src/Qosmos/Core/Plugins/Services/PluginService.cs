@@ -80,9 +80,6 @@ public sealed class PluginService : IPluginService
 
         foreach (var corePlugin in _corePlugins)
         {
-            if (_logger.IsEnabled(LogLevel.Information))
-                _logger.LogInformation("- {Identifier}", corePlugin.Identifier);
-
             if (CanLoadOnBoot(corePlugin.Manifest))
                 LoadPendingPlugin(pendingPlugins, corePlugin);
             else
@@ -392,7 +389,7 @@ public sealed class PluginService : IPluginService
             if (plugin.State is not PluginState.Disabled)
             {
                 if (_logger.IsEnabled(LogLevel.Information))
-                    _logger.LogInformation("Enabled Plugin {Identifier}", plugin.Identifier);
+                    _logger.LogInformation("Enabled plugin {Identifier}", plugin.Identifier);
 
                 return true;
             }

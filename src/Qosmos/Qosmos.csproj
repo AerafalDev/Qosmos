@@ -11,6 +11,10 @@
     <PackageReference Include="Semver" Version="3.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Qosmos.SourceGenerators\Qosmos.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
   
   <ItemGroup>
     <Content Include="Configurations/**/*.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest"/>

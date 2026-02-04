@@ -191,8 +191,6 @@ public abstract class Plugin : IDisposable, IAsyncDisposable
         try
         {
             await StopAsync(cancellationToken);
-
-            State = PluginState.Disabled;
         }
         catch (Exception e)
         {
@@ -200,6 +198,6 @@ public abstract class Plugin : IDisposable, IAsyncDisposable
                 Logger.LogError(e, "An exception occurred while shutting down plugin {Identifier}", Identifier);
         }
 
-        await DisposeAsync();
+        State = PluginState.Disabled;
     }
 }

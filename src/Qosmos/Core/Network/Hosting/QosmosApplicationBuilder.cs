@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.Metrics;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Qosmos.Core.Events.Extensions;
 using Qosmos.Core.Extensions;
 using Serilog;
 using Serilog.Core;
@@ -158,7 +159,9 @@ internal sealed class QosmosApplicationBuilder
     /// <param name="services">The service collection.</param>
     private static void ConfigureServiceDefaults(IServiceCollection services)
     {
-        services.AddSingleton<IHostLifetime, QosmosApplicationLifetime>();
+        services
+            .AddSingleton<IHostLifetime, QosmosApplicationLifetime>()
+            .AddEventBus();
     }
 
     /// <summary>

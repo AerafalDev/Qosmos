@@ -59,9 +59,9 @@ internal sealed class QosmosApplication : IDisposable, IAsyncDisposable
         var applicationLifetime = _host.Services.GetRequiredService<IHostApplicationLifetime>();
         var pluginService = _host.Services.GetRequiredService<IPluginService>();
 
-        await pluginService.SetupAsync(applicationLifetime.ApplicationStarted);
-
         await _host.StartAsync();
+
+        await pluginService.SetupAsync(applicationLifetime.ApplicationStopping);
 
         await pluginService.StartAsync(applicationLifetime.ApplicationStopping);
 

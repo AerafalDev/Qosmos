@@ -1,0 +1,33 @@
+﻿// Copyright (c) Qosmos 2026.
+// Licensed under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System.Text.Json;
+
+namespace Qosmos.Core.Codecs.Primitives;
+
+/// <summary>
+/// Provides encoding and decoding functionality for double-precision floating-point numbers (double).
+/// </summary>
+public sealed class DoubleCodec : Codec<double>
+{
+    /// <summary>
+    /// Decodes a double-precision floating-point number (double) from the provided JSON reader.
+    /// </summary>
+    /// <param name="reader">The <see cref="Utf8JsonReader"/> to read JSON data from.</param>
+    /// <returns>The decoded double-precision floating-point number.</returns>
+    public override double Decode(ref Utf8JsonReader reader)
+    {
+        return reader.GetDouble();
+    }
+
+    /// <summary>
+    /// Encodes a double-precision floating-point number (double) to the provided JSON writer.
+    /// </summary>
+    /// <param name="writer">The <see cref="Utf8JsonWriter"/> to write JSON data to.</param>
+    /// <param name="obj">The double-precision floating-point number to encode.</param>
+    public override void Encode(Utf8JsonWriter writer, double obj)
+    {
+        writer.WriteNumberValue(obj);
+    }
+}

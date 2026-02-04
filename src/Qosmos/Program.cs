@@ -1,6 +1,6 @@
 ﻿using Qosmos.Core.Network.Hosting;
 
-var builder = QosmosApplication.CreateBuilder(args);
+var builder = QosmosApplication.CreateBuilder();
 
 await builder
     .Build()

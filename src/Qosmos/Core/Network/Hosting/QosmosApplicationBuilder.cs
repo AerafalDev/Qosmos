@@ -57,8 +57,7 @@ internal sealed class QosmosApplicationBuilder
     /// <summary>
     /// Initializes a new instance of the <see cref="QosmosApplicationBuilder"/> class.
     /// </summary>
-    /// <param name="args">The command-line arguments for the application.</param>
-    public QosmosApplicationBuilder(string[] args)
+    public QosmosApplicationBuilder()
     {
         var configuration = new ConfigurationManager();
 
@@ -66,7 +65,7 @@ internal sealed class QosmosApplicationBuilder
             .AddEnvironmentVariables(prefix: System.Environment.DotnetPrefix)
             .AddEnvironmentVariables(prefix: System.Environment.QosmosPrefix);
 
-        _builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings { Configuration = configuration, Args = args });
+        _builder = Host.CreateEmptyApplicationBuilder(new HostApplicationBuilderSettings { Configuration = configuration });
 
         _builder.ConfigureContainer(GetDefaultServiceProviderFactory(_builder.Environment));
 

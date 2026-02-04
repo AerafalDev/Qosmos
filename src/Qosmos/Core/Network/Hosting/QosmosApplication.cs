@@ -59,10 +59,9 @@ internal sealed class QosmosApplication
     /// <summary>
     /// Creates a new instance of the <see cref="QosmosApplicationBuilder"/> for configuring the application.
     /// </summary>
-    /// <param name="args">The command-line arguments for the application.</param>
     /// <returns>A configured instance of <see cref="QosmosApplicationBuilder"/>.</returns>
-    public static QosmosApplicationBuilder CreateBuilder(string[] args)
+    public static QosmosApplicationBuilder CreateBuilder()
     {
-        return new QosmosApplicationBuilder(args);
+        return new QosmosApplicationBuilder();
     }
 }

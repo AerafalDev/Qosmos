@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Qosmos.SourceGenerators/Qosmos.SourceGenerators.csproj" />
     <Project Path="src/Qosmos/Qosmos.csproj" />
   </Folder>
 </Solution>

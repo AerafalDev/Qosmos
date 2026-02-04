@@ -1,3 +1,7 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Qosmos.Core.Network.Hosting;
 
-Console.WriteLine("Hello, World!");
+var builder = QosmosApplication.CreateBuilder(args);
+
+await builder
+    .Build()
+    .RunAsync();
